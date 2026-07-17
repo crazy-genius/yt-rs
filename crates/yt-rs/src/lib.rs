@@ -1,5 +1,5 @@
-mod constants;
 mod clients;
+mod constants;
 mod models;
 
 pub use clients::*;

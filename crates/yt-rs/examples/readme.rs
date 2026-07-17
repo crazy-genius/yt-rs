@@ -1,4 +1,4 @@
-use youtrack_client::{AuthorizationFlow, YoutrackClient};
+use yt_rs::{AuthorizationFlow, YoutrackClient};
 
 #[tokio::main]
 async fn main() {

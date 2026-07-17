@@ -1,7 +1,7 @@
+use crate::YoutrackError;
 use crate::clients::users::UsersApi;
 use crate::constants::REST_API_PREFIX;
 use crate::models::ApiError;
-use crate::YoutrackError;
 use reqwest::{Client, Method, RequestBuilder, Response, Url};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
@@ -27,11 +27,7 @@ impl YoutrackClient {
     /// `host_uri` is the YouTrack host only, e.g. `https://youtrack.example.com`
     /// or `https://example.com/youtrack` for installations under a subpath.
     /// The `api/` prefix is appended internally.
-    pub fn new(
-        http: Client,
-        host_uri: &str,
-        auth_flow: AuthorizationFlow,
-    ) -> crate::Result<Self> {
+    pub fn new(http: Client, host_uri: &str, auth_flow: AuthorizationFlow) -> crate::Result<Self> {
         let mut base_uri: Url = host_uri.parse()?;
         // Url::join treats the last segment of a slash-less path as a file
         // name and would replace it, so make the path explicitly a directory
