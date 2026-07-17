@@ -73,6 +73,10 @@ pub struct AgileColumn {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct AgileColumnFieldValue {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `DatabaseAttributeValueKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -113,8 +117,6 @@ pub struct AgileStatus {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct AttributeBasedSwimlaneSettings {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -139,8 +141,6 @@ pub struct ColumnSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueBasedSwimlaneSettings {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "defaultCardType", skip_serializing_if = "Option::is_none")]
     pub default_card_type: Option<Box<SwimlaneValue>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -205,6 +205,10 @@ pub struct SprintsSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SwimlaneEntityAttributeValue {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `DatabaseAttributeValueKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -234,6 +238,10 @@ pub enum SwimlaneSettingsKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SwimlaneSettingsData {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `SwimlaneSettingsKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

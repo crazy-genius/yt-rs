@@ -1,5 +1,5 @@
 use crate::spec::{PropType, Spec, Variant};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// Spec defects patched before code generation. Currently one known JetBrains
 /// exporter bug: `Project.customFields` is emitted as a bare `object` but is
@@ -34,6 +34,16 @@ pub struct Classified {
     /// downstream to decide whether a struct is a discriminator variant and must
     /// have `$type` stripped, which is a per-schema property.
     pub variant_of: BTreeMap<String, String>,
+    /// Schema names that appear as the concrete type of some OTHER schema's
+    /// property — directly, or as an array element (e.g.
+    /// `SingleEnumIssueCustomField.value: EnumBundleElement`). A schema in this
+    /// set is reachable *without* going through its root's `#[serde(tag =
+    /// "$type")]` enum, so serde never supplies the tag for it on that path; it
+    /// must carry `$type` as an ordinary field or the value is lost on
+    /// serialize. The `allOf` parent link is deliberately NOT counted here —
+    /// that is inheritance, not a field reference, and is never a way to reach
+    /// a schema as a standalone value.
+    pub directly_referenced: BTreeSet<String>,
 }
 
 pub fn classify(spec: &Spec) -> Classified {
@@ -54,7 +64,33 @@ pub fn classify(spec: &Spec) -> Classified {
         }
         roots.insert(name.clone(), schema.mapping.clone());
     }
-    Classified { roots, variant_of }
+    let directly_referenced = compute_directly_referenced(spec);
+    Classified { roots, variant_of, directly_referenced }
+}
+
+/// Scans every schema's OWN (unresolved, post-override) properties for `$ref`
+/// targets, including refs nested one level inside an array. Own props (rather
+/// than resolved/inherited props) are sufficient: any `$ref` field declared on
+/// a parent schema is found when that parent itself is visited, so nothing is
+/// missed by not resolving inheritance here.
+fn compute_directly_referenced(spec: &Spec) -> BTreeSet<String> {
+    let mut refs = BTreeSet::new();
+    for schema in spec.schemas.values() {
+        for ty in schema.props.values() {
+            collect_ref_targets(ty, &mut refs);
+        }
+    }
+    refs
+}
+
+fn collect_ref_targets(ty: &PropType, out: &mut BTreeSet<String>) {
+    match ty {
+        PropType::Ref(name) => {
+            out.insert(name.clone());
+        }
+        PropType::Array(inner) => collect_ref_targets(inner, out),
+        _ => {}
+    }
 }
 
 pub fn domain_of(name: &str) -> &'static str {
@@ -409,6 +445,47 @@ mod tests {
             }
         }
         assert_eq!(seen.len(), spec.schemas.len());
+    }
+
+    /// Load-bearing regression pin: without this test a future refactor could
+    /// silently flip the dual-use/enum-only split back to "keep on all 143" or
+    /// "strip on all 143", both of which were tried and rejected (see emit.rs).
+    #[test]
+    fn dual_use_split_is_49_and_94() {
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+        let dual_use =
+            cls.variant_of.keys().filter(|s| cls.directly_referenced.contains(*s)).count();
+        let enum_only = cls.variant_of.len() - dual_use;
+        assert_eq!(dual_use, 49, "dual-use (keep $type) variant count regressed");
+        assert_eq!(enum_only, 94, "enum-only (strip $type) variant count regressed");
+    }
+
+    #[test]
+    fn direct_reference_examples() {
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+
+        // SingleEnumIssueCustomField.value: EnumBundleElement — a plain $ref field,
+        // bypassing the BundleElement root wrapper entirely.
+        assert!(cls.directly_referenced.contains("EnumBundleElement"));
+        // AttachmentActivityItem is only ever reached through ActivityItemKind;
+        // no other schema names it directly as a field type.
+        assert!(!cls.directly_referenced.contains("AttachmentActivityItem"));
+
+        // The allOf parent link must not count as a direct reference.
+        // EnumBundleElement's allOf parent is LocalizableBundleElement, which is
+        // never itself the type of any $ref field in the spec.
+        assert!(!cls.directly_referenced.contains("LocalizableBundleElement"));
+
+        // IssueWorkItem has its own `type` prop (-> type_) that collides with a
+        // kept `$type` field; it is ALSO dual-use — e.g. `IssueTimeTracker.workItems`
+        // is `Array<IssueWorkItem>`, a plain $ref field bypassing BaseWorkItem's
+        // tagged wrapper. The collision rule must still win at emission time (see
+        // emit.rs), independent of this fact.
+        assert!(cls.directly_referenced.contains("IssueWorkItem"));
     }
 
     #[test]

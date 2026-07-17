@@ -98,28 +98,41 @@ fn element_type(struct_name: &str, orig: &str, inner: &PropType) -> String {
 
 /// Resolved properties as they should appear on the emitted struct.
 ///
-/// `$type` is stripped only when keeping it would collide with another property
-/// that maps to the same Rust field name (`type_`) — e.g. a schema with its own
-/// `type` property. In that case the discriminator can't be represented as a
-/// struct field anyway, and when this schema is used as a variant payload the
-/// enclosing `#[serde(tag = "$type")]` enum already round-trips it without help:
-/// on deserialize the tag is consumed by the enum and never reaches the
-/// payload; on serialize the enum always (re)injects its own tag, ignoring
-/// whatever the payload itself may hold for that field.
+/// For a schema that is NOT a discriminator mapping variant, `$type` is always
+/// kept: nothing else ever supplies it.
 ///
-/// When there is no collision, `$type` is kept as an ordinary field. This
-/// matters because a variant schema can *also* be referenced directly by
-/// another schema's property, bypassing the root's tagged wrapper entirely
-/// (e.g. `SingleEnumIssueCustomField.value: EnumBundleElement` — `value` names
-/// the concrete variant schema, not the `BundleElement` root). In that context
-/// the struct is serialized/deserialized on its own, with no enum around to
-/// supply the tag, so the field must carry it for the round-trip to stay
-/// lossless.
+/// For a variant, whether `$type` is kept depends on how the schema can be
+/// reached:
+///
+/// - Through its root's `#[serde(tag = "$type")]` enum, serde CONSUMES the tag
+///   on deserialize and SUPPLIES it on serialize — a `$type` field on the
+///   struct would sit at `None` (and, thanks to `skip_serializing_if`, be
+///   omitted) every time it is reached this way.
+/// - As a plain `$ref` field type on some OTHER schema (directly, or as an
+///   array element — e.g. `SingleEnumIssueCustomField.value: EnumBundleElement`),
+///   the struct is (de)serialized standalone: no enum is around to supply the
+///   tag, so the field must carry it or the value is silently lost on
+///   serialize.
+///
+/// `cls.directly_referenced` (computed once in `classify.rs`) tells us which
+/// variants are reachable the second way ("dual-use"). `$type` is kept ONLY for
+/// those; it is stripped for "enum-only" variants, since keeping it there would
+/// let a `type_: Some(..)` picked up from an earlier standalone parse leak into
+/// a serialize reached through the tagged enum, producing a duplicate `$type`
+/// key that then re-parses as `Unknown` (verified against the compiled crate).
+///
+/// A field-name collision overrides the dual-use rule and always strips
+/// `$type`: if the schema also declares its own plain `type` property, both map
+/// to the Rust field name `type_`, which `emit_struct`'s collision assert would
+/// reject outright — a hard compile-time problem, whereas an occasionally-lost
+/// `$type` is not. `IssueWorkItem` is the spec's only such case, and it happens
+/// to be dual-use too; the collision rule wins there.
 fn struct_props(spec: &Spec, cls: &Classified, schema_name: &str) -> BTreeMap<String, PropType> {
     let mut props = spec.resolved_props(schema_name);
     if cls.variant_of.contains_key(schema_name) {
         let collides = props.keys().any(|k| k != "$type" && rust_field_name(k) == "type_");
-        if collides {
+        let dual_use = cls.directly_referenced.contains(schema_name);
+        if collides || !dual_use {
             props.remove("$type");
         }
     }
@@ -134,6 +147,12 @@ pub fn emit_struct(
     out: &mut String,
 ) {
     let props = struct_props(spec, cls, schema_name);
+
+    // `$type` survives in `props` for a variant schema only when it is dual-use
+    // (see `struct_props`'s doc comment) — i.e. reachable as a standalone value
+    // with no enum around to supply the tag. Warn readers not to set it by hand.
+    let warn_on_type_field =
+        cls.variant_of.contains_key(schema_name) && props.contains_key("$type");
 
     // adjacent string-enum types first
     for (orig, ty) in &props {
@@ -153,6 +172,29 @@ pub fn emit_struct(
     writeln!(out, "pub struct {struct_name} {{").unwrap();
     for (orig, ty) in &props {
         let field = rust_field_name(orig);
+        if orig == "$type" && warn_on_type_field {
+            let root = &cls.variant_of[schema_name];
+            writeln!(
+                out,
+                "    /// Informational: populated only when this type is deserialized standalone"
+            )
+            .unwrap();
+            writeln!(
+                out,
+                "    /// (as a directly-referenced field). Serde supplies the tag when this type is"
+            )
+            .unwrap();
+            writeln!(
+                out,
+                "    /// reached through its `{root}Kind` enum. DO NOT set this manually — doing so"
+            )
+            .unwrap();
+            writeln!(
+                out,
+                "    /// emits a duplicate `$type` key and the value re-parses as `Unknown`."
+            )
+            .unwrap();
+        }
         if &field == orig {
             writeln!(out, r#"    #[serde(skip_serializing_if = "Option::is_none")]"#).unwrap();
         } else {
@@ -386,8 +428,13 @@ mod tests {
     }
 
     #[test]
-    fn variant_struct_strips_type_tag_and_boxes_refs() {
-        // IssueWorkItem is a variant of BaseWorkItem AND has a plain `type` property
+    fn issue_work_item_strips_type_tag_despite_collision() {
+        // IssueWorkItem is a variant of BaseWorkItem, has its own plain `type`
+        // property (colliding with `$type` on the Rust field name `type_`), AND is
+        // dual-use (e.g. `IssueTimeTracker.workItems: Array<IssueWorkItem>` is a
+        // plain $ref field bypassing BaseWorkItem's tagged wrapper). The collision
+        // rule must win regardless: keeping both would panic in `emit_struct`'s
+        // field-collision assert.
         let src = emitted("IssueWorkItem");
         assert!(!src.contains(r#"rename = "$type""#), "variant must not keep the tag field");
         assert!(
@@ -396,6 +443,57 @@ mod tests {
         assert!(src.contains("pub type_: Option<Box<WorkItemType>>,"));
         // inherited from BaseWorkItem
         assert!(src.contains("pub author: Option<Box<User>>,"));
+    }
+
+    #[test]
+    fn dual_use_variants_keep_type_tag() {
+        // EnumBundleElement is a variant of BundleElement AND is referenced
+        // directly by SingleEnumIssueCustomField.value, bypassing the BundleElement
+        // wrapper. It must keep `$type` as an ordinary field, with a doc comment
+        // warning against setting it manually.
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+        assert_eq!(cls.variant_of["EnumBundleElement"], "BundleElement");
+        assert!(cls.directly_referenced.contains("EnumBundleElement"));
+
+        let src = emitted("EnumBundleElement");
+        assert!(
+            src.contains(r#"#[serde(rename = "$type", skip_serializing_if = "Option::is_none")]"#)
+        );
+        assert!(src.contains("pub type_: Option<String>,"));
+        assert!(src.contains("DO NOT set this manually"), "missing manual-set warning");
+        assert!(src.contains("BundleElementKind"), "warning should name the Kind enum");
+    }
+
+    #[test]
+    fn enum_only_variants_strip_type_tag() {
+        // AttachmentActivityItem is a variant of ActivityItem but is NEVER
+        // referenced directly as a $ref field type anywhere in the spec — it is
+        // only ever reached through ActivityItemKind, which supplies the tag.
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+        assert_eq!(cls.variant_of["AttachmentActivityItem"], "ActivityItem");
+        assert!(!cls.directly_referenced.contains("AttachmentActivityItem"));
+
+        let src = emitted("AttachmentActivityItem");
+        assert!(!src.contains(r#"rename = "$type""#));
+        assert!(!src.contains("pub type_:"));
+    }
+
+    /// Load-bearing regression pin: without this, a future refactor could
+    /// silently flip the rule back to "keep on all 143" or "strip on all 143",
+    /// both of which were tried and rejected (see `struct_props`'s doc comment).
+    #[test]
+    fn dual_use_and_enum_only_counts_are_49_and_94() {
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+        let dual_use =
+            cls.variant_of.keys().filter(|s| cls.directly_referenced.contains(*s)).count();
+        assert_eq!(dual_use, 49);
+        assert_eq!(cls.variant_of.len() - dual_use, 94);
     }
 
     #[test]

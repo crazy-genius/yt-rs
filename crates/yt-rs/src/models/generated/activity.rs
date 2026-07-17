@@ -74,6 +74,10 @@ pub enum ActivityItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ActivityItemData {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `ActivityItemKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -326,8 +330,6 @@ impl ActivityItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct AttachmentActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<IssueAttachment>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -350,8 +352,6 @@ pub struct AttachmentActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommentActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<IssueComment>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -376,8 +376,6 @@ pub struct CommentActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommentAttachmentsActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<IssueAttachment>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -400,8 +398,6 @@ pub struct CommentAttachmentsActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CreatedDeletedActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -424,8 +420,6 @@ pub struct CreatedDeletedActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFieldActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -448,8 +442,6 @@ pub struct CustomFieldActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueCreatedActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<Issue>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -472,8 +464,6 @@ pub struct IssueCreatedActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueResolvedActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -496,8 +486,6 @@ pub struct IssueResolvedActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct LinksActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<Issue>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -520,8 +508,6 @@ pub struct LinksActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiValueActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -544,8 +530,6 @@ pub struct MultiValueActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ProjectActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Box<IssueKey>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -568,8 +552,6 @@ pub struct ProjectActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SimpleValueActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -592,8 +574,6 @@ pub struct SimpleValueActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleValueActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -616,8 +596,6 @@ pub struct SingleValueActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SprintActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<Sprint>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -640,8 +618,6 @@ pub struct SprintActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TagsActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<Tag>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -664,8 +640,6 @@ pub struct TagsActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TextCustomFieldActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -690,8 +664,6 @@ pub struct TextCustomFieldActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TextMarkupActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -716,8 +688,6 @@ pub struct TextMarkupActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UsesMarkupActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -742,8 +712,6 @@ pub struct UsesMarkupActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VcsChangeActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<VcsChange>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -766,8 +734,6 @@ pub struct VcsChangeActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VisibilityActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -792,8 +758,6 @@ pub struct VisibilityActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VisibilityGroupActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<UserGroup>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -818,8 +782,6 @@ pub struct VisibilityGroupActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VisibilityUserActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<User>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -844,8 +806,6 @@ pub struct VisibilityUserActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VotersActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<User>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -868,8 +828,6 @@ pub struct VotersActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct WorkItemActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<IssueWorkItem>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -892,8 +850,6 @@ pub struct WorkItemActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct WorkItemAuthorActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Box<User>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -916,8 +872,6 @@ pub struct WorkItemAuthorActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct WorkItemDurationActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Box<DurationValue>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -940,8 +894,6 @@ pub struct WorkItemDurationActivityItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct WorkItemTypeActivityItem {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<Vec<WorkItemType>>,
     #[serde(skip_serializing_if = "Option::is_none")]

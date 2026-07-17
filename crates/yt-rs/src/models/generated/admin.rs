@@ -61,8 +61,6 @@ pub struct BackupStatus {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BitBucketChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -89,6 +87,10 @@ pub struct BitBucketChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BitBucketServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -99,8 +101,6 @@ pub struct BitBucketServer {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BitbucketStandaloneChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -127,6 +127,10 @@ pub struct BitbucketStandaloneChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BitbucketStandaloneServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -162,6 +166,10 @@ pub enum ChangesProcessorKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ChangesProcessorData {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `ChangesProcessorKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
@@ -354,8 +362,6 @@ pub enum DatabaseAttributeValueKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct DatabaseAttributeValueData {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -495,8 +501,6 @@ pub struct EmailSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GitHubChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -523,6 +527,10 @@ pub struct GitHubChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GitHubServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -533,8 +541,6 @@ pub struct GitHubServer {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GitLabChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -561,6 +567,10 @@ pub struct GitLabChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GitLabServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -571,8 +581,6 @@ pub struct GitLabServer {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GiteaChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -599,6 +607,10 @@ pub struct GiteaChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GiteaServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -643,8 +655,6 @@ pub struct GlobalTimeTrackingSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GogsChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -671,6 +681,10 @@ pub struct GogsChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GogsServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -681,8 +695,6 @@ pub struct GogsServer {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct JenkinsChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -703,6 +715,10 @@ pub struct JenkinsChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct JenkinsServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -777,8 +793,6 @@ pub struct RestCorsSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SpaceChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -805,6 +819,10 @@ pub struct SpaceChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SpaceServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -835,8 +853,6 @@ pub struct SystemSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TeamcityChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -857,6 +873,10 @@ pub struct TeamcityChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TeamcityServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -952,8 +972,6 @@ pub struct VcsChange {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VcsHostingChangesProcessor {
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "addComments", skip_serializing_if = "Option::is_none")]
     pub add_comments: Option<bool>,
     #[serde(rename = "branchSpecification", skip_serializing_if = "Option::is_none")]
@@ -980,6 +998,10 @@ pub struct VcsHostingChangesProcessor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VcsHostingServer {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1015,6 +1037,10 @@ pub enum VcsServerKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VcsServerData {
+    /// Informational: populated only when this type is deserialized standalone
+    /// (as a directly-referenced field). Serde supplies the tag when this type is
+    /// reached through its `VcsServerKind` enum. DO NOT set this manually — doing so
+    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
     #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
