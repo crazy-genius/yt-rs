@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize, Serializer};
 use std::fmt::{Display, Formatter};
 
-pub mod user;
+mod generated;
+pub use generated::*;
 
 pub struct FieldsQuery(pub(crate) Vec<String>);
 impl From<Vec<String>> for FieldsQuery {

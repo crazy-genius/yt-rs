@@ -1,6 +1,6 @@
 use super::YoutrackClient;
 use crate::constants::ENDPOINT_USERS;
-use crate::models::{FieldsQuery, user::User};
+use crate::models::{FieldsQuery, User};
 use reqwest::Method;
 
 pub struct UsersApi<'a> {
