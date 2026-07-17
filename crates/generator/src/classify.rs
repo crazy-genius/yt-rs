@@ -1,4 +1,4 @@
-use crate::spec::{PropType, Spec};
+use crate::spec::{PropType, Spec, Variant};
 use std::collections::BTreeMap;
 
 /// Spec defects patched before code generation. Currently one known JetBrains
@@ -27,10 +27,12 @@ pub fn apply_overrides(spec: &mut Spec) {
 }
 
 pub struct Classified {
-    /// Root name -> sorted variant type names (the spec's flat transitive mapping,
-    /// which always includes the root itself).
-    pub roots: BTreeMap<String, Vec<String>>,
-    /// Variant type name -> its root.
+    /// Root name -> sorted variants (tag + schema pairs; the spec's flat transitive
+    /// mapping, which always includes the root itself).
+    pub roots: BTreeMap<String, Vec<Variant>>,
+    /// Schema name -> its root. Keyed by schema (not wire tag): this is used
+    /// downstream to decide whether a struct is a discriminator variant and must
+    /// have `$type` stripped, which is a per-schema property.
     pub variant_of: BTreeMap<String, String>,
 }
 
@@ -42,9 +44,13 @@ pub fn classify(spec: &Spec) -> Classified {
             continue;
         }
         for v in &schema.mapping {
-            assert!(spec.schemas.contains_key(v), "{name}: mapping references unknown schema {v}");
-            let prev = variant_of.insert(v.clone(), name.clone());
-            assert!(prev.is_none(), "{v} appears in two discriminator mappings");
+            assert!(
+                spec.schemas.contains_key(&v.schema),
+                "{name}: mapping references unknown schema {}",
+                v.schema
+            );
+            let prev = variant_of.insert(v.schema.clone(), name.clone());
+            assert!(prev.is_none(), "{} appears in two discriminator mappings", v.schema);
         }
         roots.insert(name.clone(), schema.mapping.clone());
     }
@@ -321,6 +327,7 @@ pub const DOMAINS: &[(&str, &[&str])] = &[
 mod tests {
     use super::*;
     use crate::spec::PropType;
+    use crate::spec::Variant;
     use crate::spec::tests::load;
 
     #[test]
@@ -330,7 +337,11 @@ mod tests {
         assert_eq!(cls.variant_of.len(), 143);
         assert_eq!(
             cls.roots["User"],
-            vec!["Me".to_string(), "User".into(), "VcsUnresolvedUser".into()]
+            vec![
+                Variant { tag: "Me".into(), schema: "Me".into() },
+                Variant { tag: "User".into(), schema: "User".into() },
+                Variant { tag: "VcsUnresolvedUser".into(), schema: "VcsUnresolvedUser".into() },
+            ]
         );
         assert_eq!(cls.roots["ActivityItem"].len(), 27);
         assert_eq!(cls.variant_of["Me"], "User");
@@ -346,6 +357,42 @@ mod tests {
         for root in cls.roots.keys() {
             assert_eq!(&cls.variant_of[root], root, "{root} nests under another root");
         }
+    }
+
+    /// IssueCustomField's mapping has the spec's only 2 entries where the
+    /// discriminator KEY (the `$type` value actually sent on the wire) differs
+    /// from the TARGET schema (the `$ref` describing the payload shape).
+    /// Conflating the two — e.g. by using the schema name as the enum variant's
+    /// serde tag — makes serde expect `$type: "DatabaseSingleValueIssueCustomField"`
+    /// when the server actually sends `$type: "SingleValueIssueCustomField"`. That
+    /// mismatch doesn't error: an untagged `Known`/`Unknown(Value)` wrapper above it
+    /// silently swallows it into `Unknown`. This test pins both halves so a
+    /// regression shows up as a loud assertion failure instead of a silent runtime
+    /// degradation.
+    #[test]
+    fn mismatched_discriminator_tags_keep_both_halves() {
+        let cls = classify(&load());
+        let issue_custom_field = &cls.roots["IssueCustomField"];
+        assert!(
+            issue_custom_field.contains(&Variant {
+                tag: "SingleValueIssueCustomField".into(),
+                schema: "DatabaseSingleValueIssueCustomField".into(),
+            }),
+            "missing SingleValueIssueCustomField -> DatabaseSingleValueIssueCustomField variant"
+        );
+        assert!(
+            issue_custom_field.contains(&Variant {
+                tag: "MultiValueIssueCustomField".into(),
+                schema: "DatabaseMultiValueIssueCustomField".into(),
+            }),
+            "missing MultiValueIssueCustomField -> DatabaseMultiValueIssueCustomField variant"
+        );
+
+        // variant_of is keyed by SCHEMA, not tag.
+        assert_eq!(cls.variant_of["DatabaseSingleValueIssueCustomField"], "IssueCustomField");
+        assert_eq!(cls.variant_of["DatabaseMultiValueIssueCustomField"], "IssueCustomField");
+        assert!(!cls.variant_of.contains_key("SingleValueIssueCustomField"));
+        assert!(!cls.variant_of.contains_key("MultiValueIssueCustomField"));
     }
 
     #[test]

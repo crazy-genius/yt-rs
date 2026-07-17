@@ -14,13 +14,25 @@ pub enum PropType {
     StrEnum(Vec<String>),
 }
 
+/// One entry of a discriminator mapping: the `$type` value seen on the wire,
+/// and the schema describing that payload. They differ for 2 of the spec's 143
+/// entries, so the two must never be conflated.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Variant {
+    /// The `$type` value on the wire; becomes the Rust enum variant name.
+    pub tag: String,
+    /// The schema describing the payload; becomes the variant's payload type.
+    pub schema: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct Schema {
     pub parent: Option<String>,
     /// The schema's own (inline) properties, unresolved.
     pub props: BTreeMap<String, PropType>,
-    /// Discriminator mapping keys (sorted); empty when the schema is not a polymorphic root.
-    pub mapping: Vec<String>,
+    /// Discriminator mapping entries (sorted by tag); empty when the schema is not a
+    /// polymorphic root.
+    pub mapping: Vec<Variant>,
 }
 
 #[derive(Debug)]
@@ -72,20 +84,21 @@ fn parse_schema(name: &str, def: &Value) -> Schema {
     let mapping = def["discriminator"]["mapping"]
         .as_object()
         .map(|m| {
-            // Resolve to the $ref target schema name, not the discriminator key: a
-            // handful of mappings (e.g. IssueCustomField's `MultiValueIssueCustomField`
-            // -> `DatabaseMultiValueIssueCustomField`) use a key that isn't itself a
-            // schema name.
-            let mut names: Vec<String> =
-                m.values()
-                    .map(|v| {
-                        ref_name(v.as_str().unwrap_or_else(|| {
+            // Keep both the wire tag (the mapping key) and the target schema (the
+            // $ref value) distinct: a handful of mappings (e.g. IssueCustomField's
+            // `MultiValueIssueCustomField` -> `DatabaseMultiValueIssueCustomField`)
+            // use a key that isn't itself a schema name.
+            let mut variants: Vec<Variant> =
+                m.iter()
+                    .map(|(tag, v)| Variant {
+                        tag: tag.clone(),
+                        schema: ref_name(v.as_str().unwrap_or_else(|| {
                             panic!("{name}: mapping value is not a $ref string")
-                        }))
+                        })),
                     })
                     .collect();
-            names.sort();
-            names
+            variants.sort();
+            variants
         })
         .unwrap_or_default();
     Schema { parent, props, mapping }
@@ -155,7 +168,15 @@ pub(crate) mod tests {
         assert_eq!(user.props["banned"], PropType::Bool);
         assert_eq!(user.props["tags"], PropType::Array(Box::new(PropType::Ref("Tag".into()))));
         assert_eq!(user.props["profiles"], PropType::Ref("UserProfiles".into()));
-        assert_eq!(user.mapping, vec!["Me".to_string(), "User".into(), "VcsUnresolvedUser".into()]);
+        // For User, all three tags equal their schemas (no key/target mismatch here).
+        assert_eq!(
+            user.mapping,
+            vec![
+                Variant { tag: "Me".into(), schema: "Me".into() },
+                Variant { tag: "User".into(), schema: "User".into() },
+                Variant { tag: "VcsUnresolvedUser".into(), schema: "VcsUnresolvedUser".into() },
+            ]
+        );
     }
 
     #[test]
