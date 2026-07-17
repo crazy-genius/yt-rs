@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BuildProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<BuildBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -31,6 +33,8 @@ pub struct BuildProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,6 +57,8 @@ pub struct BundleProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct EnumProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<EnumBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -79,6 +85,8 @@ pub struct EnumProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct GroupProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -103,6 +111,8 @@ pub struct GroupProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct OwnedProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<OwnedBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -129,6 +139,8 @@ pub struct OwnedProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct PeriodProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -151,6 +163,8 @@ pub struct PeriodProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct Project {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(rename = "createdBy", skip_serializing_if = "Option::is_none")]
@@ -185,6 +199,8 @@ pub struct Project {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ProjectBasedColorCoding {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "projectColors", skip_serializing_if = "Option::is_none")]
@@ -231,6 +247,8 @@ pub enum ProjectCustomFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ProjectCustomFieldData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -457,6 +475,8 @@ impl ProjectCustomFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ProjectTeam {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -497,6 +517,8 @@ pub struct ProjectTimeTrackingSettings {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SimpleProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -519,6 +541,8 @@ pub struct SimpleProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<StateBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -545,6 +569,8 @@ pub struct StateProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TextProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -567,6 +593,8 @@ pub struct TextProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VersionProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<VersionBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]

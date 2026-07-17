@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BaseBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -31,6 +33,8 @@ pub enum BaseWorkItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BaseWorkItemData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -55,6 +59,8 @@ impl BaseWorkItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BuildBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -65,6 +71,8 @@ pub struct BuildBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BuildBundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<BuildBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -83,6 +91,8 @@ pub struct BuildBundleCustomFieldDefaults {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BuildBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(rename = "assembleDate", skip_serializing_if = "Option::is_none")]
@@ -127,6 +137,8 @@ pub enum BundleKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -177,6 +189,8 @@ impl BundleKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(rename = "emptyFieldText", skip_serializing_if = "Option::is_none")]
@@ -212,6 +226,8 @@ pub enum BundleElementKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleElementData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -391,6 +407,8 @@ pub enum ColorCodingKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ColorCodingData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -416,6 +434,8 @@ impl ColorCodingKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommandLimitedVisibility {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "permittedGroups", skip_serializing_if = "Option::is_none")]
@@ -452,6 +472,8 @@ pub struct CommandList {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommandUnlimitedVisibility {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -475,6 +497,8 @@ pub enum CommandVisibilityKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommandVisibilityData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -546,6 +570,8 @@ pub enum CustomFieldConditionKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFieldConditionData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -606,6 +632,8 @@ pub enum CustomFieldDefaultsKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFieldDefaultsData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(rename = "emptyFieldText", skip_serializing_if = "Option::is_none")]
@@ -716,6 +744,8 @@ impl CustomFieldDefaultsKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFilterField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "customField", skip_serializing_if = "Option::is_none")]
     pub custom_field: Option<Box<CustomField>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -754,6 +784,8 @@ pub struct DuplicateVote {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct EnumBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -764,6 +796,8 @@ pub struct EnumBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct EnumBundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<EnumBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -782,6 +816,8 @@ pub struct EnumBundleCustomFieldDefaults {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct EnumBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -814,6 +850,8 @@ pub struct Event {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct FieldBasedColorCoding {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -822,6 +860,8 @@ pub struct FieldBasedColorCoding {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct FieldBasedCondition {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub field: Option<Box<BundleProjectCustomField>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -873,6 +913,8 @@ pub enum FilterFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct FilterFieldData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -928,6 +970,8 @@ impl FilterFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct LimitedVisibility {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "permittedGroups", skip_serializing_if = "Option::is_none")]
@@ -938,6 +982,8 @@ pub struct LimitedVisibility {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct LocalizableBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -970,6 +1016,8 @@ pub struct Logo {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct NestedGroup {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -988,6 +1036,8 @@ pub struct NestedGroup {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct OwnedBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -998,6 +1048,8 @@ pub struct OwnedBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct OwnedBundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<OwnedBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -1016,6 +1068,8 @@ pub struct OwnedBundleCustomFieldDefaults {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct OwnedBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1060,6 +1114,8 @@ pub struct PeriodFieldFormat {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct PredefinedFilterField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1082,6 +1138,8 @@ pub struct Reaction {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SavedQuery {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1122,6 +1180,8 @@ pub struct SearchSuggestions {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -1132,6 +1192,8 @@ pub struct StateBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateBundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<StateBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -1150,6 +1212,8 @@ pub struct StateBundleCustomFieldDefaults {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1218,6 +1282,8 @@ pub struct Suggestion {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct Tag {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub color: Option<Box<FieldStyle>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1268,12 +1334,16 @@ pub struct TimeZoneDescriptor {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UnlimitedVisibility {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VersionBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -1284,6 +1354,8 @@ pub struct VersionBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VersionBundleCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<VersionBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -1302,6 +1374,8 @@ pub struct VersionBundleCustomFieldDefaults {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VersionBundleElement {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1345,6 +1419,8 @@ pub enum VisibilityKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VisibilityData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -1384,6 +1460,8 @@ pub struct WIPLimit {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct WatchFolder {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

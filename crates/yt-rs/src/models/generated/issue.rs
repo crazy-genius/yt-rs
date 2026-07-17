@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct DatabaseMultiValueIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,6 +19,8 @@ pub struct DatabaseMultiValueIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct DatabaseSingleValueIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,6 +33,8 @@ pub struct DatabaseSingleValueIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct DateIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -252,6 +258,8 @@ pub enum IssueCustomFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueCustomFieldData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -383,6 +391,8 @@ pub enum IssueFolderKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueFolderData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -515,6 +525,8 @@ pub struct IssueLinkType {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct IssueTag {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub color: Option<Box<FieldStyle>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -623,6 +635,8 @@ pub struct IssueWorkItem {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiBuildIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -635,6 +649,8 @@ pub struct MultiBuildIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiEnumIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -647,6 +663,8 @@ pub struct MultiEnumIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiGroupIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -659,6 +677,8 @@ pub struct MultiGroupIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiOwnedIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -671,6 +691,8 @@ pub struct MultiOwnedIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiUserIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -683,6 +705,8 @@ pub struct MultiUserIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct MultiVersionIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -695,6 +719,8 @@ pub struct MultiVersionIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct PeriodIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -719,6 +745,8 @@ pub struct PeriodValue {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SimpleIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -731,6 +759,8 @@ pub struct SimpleIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleBuildIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -743,6 +773,8 @@ pub struct SingleBuildIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleEnumIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -755,6 +787,8 @@ pub struct SingleEnumIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleGroupIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -767,6 +801,8 @@ pub struct SingleGroupIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleOwnedIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -779,6 +815,8 @@ pub struct SingleOwnedIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleUserIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -791,6 +829,8 @@ pub struct SingleUserIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct SingleVersionIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -803,6 +843,8 @@ pub struct SingleVersionIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -815,6 +857,8 @@ pub struct StateIssueCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct StateMachineIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event: Option<Box<Event>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -843,6 +887,8 @@ pub struct TextFieldValue {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct TextIssueCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

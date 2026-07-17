@@ -96,12 +96,32 @@ fn element_type(struct_name: &str, orig: &str, inner: &PropType) -> String {
     }
 }
 
-/// Resolved properties as they should appear on the emitted struct:
-/// `$type` stripped when the schema is a discriminator-mapping variant.
+/// Resolved properties as they should appear on the emitted struct.
+///
+/// `$type` is stripped only when keeping it would collide with another property
+/// that maps to the same Rust field name (`type_`) — e.g. a schema with its own
+/// `type` property. In that case the discriminator can't be represented as a
+/// struct field anyway, and when this schema is used as a variant payload the
+/// enclosing `#[serde(tag = "$type")]` enum already round-trips it without help:
+/// on deserialize the tag is consumed by the enum and never reaches the
+/// payload; on serialize the enum always (re)injects its own tag, ignoring
+/// whatever the payload itself may hold for that field.
+///
+/// When there is no collision, `$type` is kept as an ordinary field. This
+/// matters because a variant schema can *also* be referenced directly by
+/// another schema's property, bypassing the root's tagged wrapper entirely
+/// (e.g. `SingleEnumIssueCustomField.value: EnumBundleElement` — `value` names
+/// the concrete variant schema, not the `BundleElement` root). In that context
+/// the struct is serialized/deserialized on its own, with no enum around to
+/// supply the tag, so the field must carry it for the round-trip to stay
+/// lossless.
 fn struct_props(spec: &Spec, cls: &Classified, schema_name: &str) -> BTreeMap<String, PropType> {
     let mut props = spec.resolved_props(schema_name);
     if cls.variant_of.contains_key(schema_name) {
-        props.remove("$type"); // serde consumes the tag for enum variants
+        let collides = props.keys().any(|k| k != "$type" && rust_field_name(k) == "type_");
+        if collides {
+            props.remove("$type");
+        }
     }
     props
 }
@@ -250,7 +270,7 @@ fn emit_root(spec: &Spec, cls: &Classified, name: &str, out: &mut String) {
 }
 
 fn emit_accessors(spec: &Spec, cls: &Classified, root: &str, out: &mut String) {
-    let props = struct_props(spec, cls, root); // root is its own variant: $type already stripped
+    let props = struct_props(spec, cls, root); // root is its own variant
     let variants = &cls.roots[root];
 
     // Accessors are only sound if every variant declares the field with the same
@@ -262,6 +282,11 @@ fn emit_accessors(spec: &Spec, cls: &Classified, root: &str, out: &mut String) {
     // properly typed value for those props.
     let uniform_props: Vec<(&String, &PropType)> = props
         .iter()
+        // `$type` is excluded even when `struct_props` kept it as a field (see its
+        // doc comment): when reached through `{Root}Kind`, the tag is consumed by
+        // the enum during deserialize and never populates the payload struct, so
+        // an accessor here would silently and misleadingly always return `None`.
+        .filter(|(orig, _)| orig.as_str() != "$type")
         .filter(|(orig, ty)| {
             variants.iter().all(|v| {
                 spec.resolved_props(&v.schema).get(orig.as_str()).is_some_and(|vt| vt == *ty)

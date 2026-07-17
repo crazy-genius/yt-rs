@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct Article {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<ArticleAttachment>>,
     #[serde(rename = "childArticles", skip_serializing_if = "Option::is_none")]
@@ -131,6 +133,8 @@ pub enum BaseArticleKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BaseArticleData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<ArticleAttachment>>,
     #[serde(skip_serializing_if = "Option::is_none")]

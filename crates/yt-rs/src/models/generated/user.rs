@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct AllUsersGroup {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,6 +39,8 @@ pub struct GeneralUserProfile {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct Me {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "avatarUrl", skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,6 +113,8 @@ pub struct OnlineUsers {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct RegisteredUsersGroup {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -154,6 +160,8 @@ pub enum UserKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "avatarUrl", skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -344,6 +352,8 @@ impl UserKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserBundle {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "aggregatedUsers", skip_serializing_if = "Option::is_none")]
     pub aggregated_users: Option<Vec<User>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -358,6 +368,8 @@ pub struct UserBundle {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserCustomFieldDefaults {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<UserBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -395,6 +407,8 @@ pub enum UserGroupKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserGroupData {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -538,6 +552,8 @@ pub struct UserProfiles {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserProjectCustomField {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bundle: Option<Box<UserBundle>>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
@@ -564,6 +580,8 @@ pub struct UserProjectCustomField {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VcsUnresolvedUser {
+    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
     #[serde(rename = "avatarUrl", skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
