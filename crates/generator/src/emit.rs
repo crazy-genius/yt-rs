@@ -3,11 +3,16 @@ use crate::spec::{PropType, Spec};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write;
 
+// Rust reserved and weak keywords, including edition-2024 additions (`gen`) and
+// reserved-for-future-use words (`abstract`, `become`, `box`, `do`, `final`,
+// `override`, `priv`, `typeof`, `unsized`, `virtual`, `yield`). Kept alphabetically
+// sorted.
 const RUST_KEYWORDS: &[&str] = &[
-    "as", "box", "break", "const", "continue", "crate", "do", "dyn", "else", "enum", "extern",
-    "fn", "for", "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref",
-    "return", "self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use",
-    "where", "while", "yield",
+    "abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate",
+    "do", "dyn", "else", "enum", "extern", "false", "final", "fn", "for", "gen", "if", "impl",
+    "in", "let", "loop", "macro", "match", "mod", "move", "mut", "override", "priv", "pub", "ref",
+    "return", "self", "static", "struct", "super", "trait", "true", "try", "type", "typeof",
+    "unsafe", "unsized", "use", "virtual", "where", "while", "yield",
 ];
 
 /// camelCase (or $-prefixed) property name -> snake_case Rust field name.
@@ -35,10 +40,18 @@ pub fn rust_field_name(orig: &str) -> String {
     out
 }
 
-/// "mailProtocol" -> "MailProtocol" (for enum type names derived from field names).
+/// "mail_protocol" -> "MailProtocol" (for enum type names derived from the
+/// snake_case output of `rust_field_name`; splits on `_` and pascalizes each
+/// segment, so e.g. the keyword-escaped "type_" -> "Type").
 fn type_pascal(field: &str) -> String {
-    let mut c = field.chars();
-    c.next().map(|f| f.to_ascii_uppercase().to_string() + c.as_str()).unwrap_or_default()
+    field
+        .split('_')
+        .filter(|w| !w.is_empty())
+        .map(|w| {
+            let mut c = w.chars();
+            c.next().map(|f| f.to_ascii_uppercase().to_string() + c.as_str()).unwrap_or_default()
+        })
+        .collect()
 }
 
 /// "MS_GRAPH_API" -> "MsGraphApi" (for enum variant names derived from values).
@@ -390,6 +403,53 @@ mod tests {
         assert!(src.contains("Other(String),"));
         assert!(src.contains(r#"#[serde(from = "String", into = "String")]"#));
         assert!(src.contains("pub direction: Option<IssueLinkDirection>,"));
+
+        // The enum's variant LIST, asserted distinctly from any match arm: this exact
+        // substring (open brace, newline, 4-space-indented "Outward,") can only occur
+        // in the `pub enum IssueLinkDirection { ... }` declaration itself. Match arms
+        // referencing the same variant are always qualified (`Self::Outward,` /
+        // `IssueLinkDirection::Outward,`), so they never produce a bare 4-space
+        // "Outward," line and cannot satisfy this assertion. This would fail if the
+        // variant list were emitted empty.
+        assert!(src.contains("pub enum IssueLinkDirection {\n    Outward,\n"));
+
+        // Both conversion impls required by `#[serde(from = "String", into = "String")]`
+        // must actually be emitted; deleting either would leave code that does not
+        // compile even though the weaker assertions above would still pass.
+        assert!(src.contains("impl From<String> for IssueLinkDirection {"));
+        assert!(src.contains("impl From<IssueLinkDirection> for String {"));
+
+        // Round-trip arms, both directions.
+        assert!(src.contains(r#""OUTWARD" => Self::Outward,"#));
+        assert!(src.contains(r#"IssueLinkDirection::Outward => "OUTWARD".to_owned(),"#));
+
+        // Lossless `Other` catch-all, both directions.
+        assert!(src.contains("_ => Self::Other(s),"));
+        assert!(src.contains("IssueLinkDirection::Other(s) => s,"));
+    }
+
+    // 2 of the spec's 3 string enums (the third, `IssueLink.direction`, is a single
+    // word and so cannot catch this class of bug): `type_pascal` used to only
+    // uppercase the first character of the already-snake_case field name, producing
+    // e.g. `EmailSettingsMail_protocol` instead of `EmailSettingsMailProtocol`.
+    #[test]
+    fn str_enum_names_are_camel_case() {
+        let src = emitted("EmailSettings");
+        assert!(src.contains("pub enum EmailSettingsMailProtocol {"));
+        assert!(src.contains("pub mail_protocol: Option<EmailSettingsMailProtocol>,"));
+        assert!(!enum_type_name(&src).contains('_'));
+
+        let src = emitted("DatabaseBackupSettings");
+        assert!(src.contains("pub enum DatabaseBackupSettingsArchiveFormat {"));
+        assert!(!enum_type_name(&src).contains('_'));
+    }
+
+    /// Extracts the type name out of the (sole, in these two fixtures) `pub enum
+    /// NAME {` declaration, so the "no underscore" check inspects the actual emitted
+    /// name rather than restating a hardcoded expectation.
+    fn enum_type_name(src: &str) -> &str {
+        let after = src.split("pub enum ").nth(1).expect("no `pub enum` in source");
+        after.split(" {").next().expect("malformed enum declaration")
     }
 
     fn all_files() -> std::collections::BTreeMap<String, String> {
