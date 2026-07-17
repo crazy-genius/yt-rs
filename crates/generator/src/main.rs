@@ -2,6 +2,7 @@
 // reached from tests until then.
 #![allow(dead_code)]
 
+mod classify;
 mod spec;
 
 fn main() {

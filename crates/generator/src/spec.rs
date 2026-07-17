@@ -71,7 +71,22 @@ fn parse_schema(name: &str, def: &Value) -> Schema {
     }
     let mapping = def["discriminator"]["mapping"]
         .as_object()
-        .map(|m| m.keys().cloned().collect())
+        .map(|m| {
+            // Resolve to the $ref target schema name, not the discriminator key: a
+            // handful of mappings (e.g. IssueCustomField's `MultiValueIssueCustomField`
+            // -> `DatabaseMultiValueIssueCustomField`) use a key that isn't itself a
+            // schema name.
+            let mut names: Vec<String> =
+                m.values()
+                    .map(|v| {
+                        ref_name(v.as_str().unwrap_or_else(|| {
+                            panic!("{name}: mapping value is not a $ref string")
+                        }))
+                    })
+                    .collect();
+            names.sort();
+            names
+        })
         .unwrap_or_default();
     Schema { parent, props, mapping }
 }
@@ -118,9 +133,11 @@ pub(crate) mod tests {
     use super::*;
 
     pub(crate) fn load() -> Spec {
-        let raw =
-            std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/../../docs/openapi.json"))
-                .expect("spec file");
+        let raw = std::fs::read_to_string(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../docs/openapi.json"
+        ))
+        .expect("spec file");
         Spec::parse(&raw)
     }
 
