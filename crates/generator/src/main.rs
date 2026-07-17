@@ -3,6 +3,7 @@
 #![allow(dead_code)]
 
 mod classify;
+mod emit;
 mod spec;
 
 fn main() {
