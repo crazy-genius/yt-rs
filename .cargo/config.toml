@@ -1,4 +1,6 @@
 [alias]
 lint = "clippy --workspace --all-targets --all-features -- -D warnings"
 fmt-check = "fmt --all -- --check"
-xtask = "run -p generator "
+# the `--` separator matters: it forwards `codegen` / `--check` to the binary
+# instead of letting cargo try to parse them as its own arguments
+xtask = "run -p generator --"
