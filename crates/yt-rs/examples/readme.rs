@@ -2,12 +2,13 @@ use yt_rs::{AuthorizationFlow, YoutrackClient};
 
 #[tokio::main]
 async fn main() {
+    let host = std::env::var("YOUTRACK_HOST").expect("YOUTRACK_HOST not found");
     let token = std::env::var("YOUTRACK_TOKEN").expect("set YOUTRACK_TOKEN env variable");
 
     let http = reqwest::Client::new();
     let client = YoutrackClient::new(
         http,
-        "https://youtrack.gbfa.dev",
+        host.as_str(),
         AuthorizationFlow::PermanentBearerToken(token),
     )
     .unwrap();
