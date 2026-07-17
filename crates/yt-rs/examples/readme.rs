@@ -13,5 +13,5 @@ async fn main() {
 
     let fields_query = vec!["login".into(), "id".into()].into();
     let me = users_api.me(Some(fields_query)).await.unwrap();
-    println!("{:?}", me)
+    println!("logged in as {:?} (id {:?})", me.login(), me.id());
 }
