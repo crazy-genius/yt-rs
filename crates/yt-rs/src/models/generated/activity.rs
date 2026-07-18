@@ -74,12 +74,6 @@ pub enum ActivityItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ActivityItemData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `ActivityItemKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]

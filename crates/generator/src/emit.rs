@@ -131,8 +131,15 @@ fn struct_props(spec: &Spec, cls: &Classified, schema_name: &str) -> BTreeMap<St
     let mut props = spec.resolved_props(schema_name);
     if cls.variant_of.contains_key(schema_name) {
         let collides = props.keys().any(|k| k != "$type" && rust_field_name(k) == "type_");
+        // A root's own `{Root}Data` payload struct is only ever reached through its
+        // `{Root}Kind` tagged enum — fields elsewhere reference the wrapper `{Root}`,
+        // never `{Root}Data` — so serde always consumes the tag and `type_` would
+        // stay `None`. The root name lands in `directly_referenced` because of those
+        // wrapper references, but that indirection means the Data struct itself is
+        // never standalone, so it must strip `$type` like an enum-only variant.
+        let is_root_data = cls.roots.contains_key(schema_name);
         let dual_use = cls.directly_referenced.contains(schema_name);
-        if collides || !dual_use {
+        if collides || is_root_data || !dual_use {
             props.remove("$type");
         }
     }
@@ -494,6 +501,56 @@ mod tests {
             cls.variant_of.keys().filter(|s| cls.directly_referenced.contains(*s)).count();
         assert_eq!(dual_use, 49);
         assert_eq!(cls.variant_of.len() - dual_use, 94);
+    }
+
+    #[test]
+    fn root_data_structs_strip_type_tag() {
+        // A root's `{Root}Data` payload is only reachable through `{Root}Kind`, which
+        // consumes the tag, so it must NOT carry `$type` even though the root name is
+        // `directly_referenced` (via the wrapper). Keeping it would be dead weight and
+        // a duplicate-`$type` foot-gun if a caller ever set it.
+        let files = all_files();
+        let user = &files["user.rs"];
+        let data = user
+            .split("pub struct UserData {")
+            .nth(1)
+            .and_then(|s| s.split("}\n").next())
+            .expect("UserData struct");
+        assert!(!data.contains("type_:"), "UserData should not carry a $type field:\n{data}");
+        assert!(!data.contains("DO NOT set this manually"), "no warning without the field");
+        // sanity: a genuinely dual-use non-root variant still keeps it
+        let issue = &files["issue.rs"];
+        assert!(issue.contains("pub struct PeriodValue {"));
+    }
+
+    /// Load-bearing regression pin for the uniform-accessor selection filter. Only a
+    /// handful of accessors are spot-checked by name elsewhere; if the filter silently
+    /// over-rejected after a spec refresh (e.g. a widened type on one variant), those
+    /// spot checks would still pass while most accessors vanished. This pins the total.
+    #[test]
+    fn total_uniform_accessor_prop_count_is_stable() {
+        let mut spec = load();
+        apply_overrides(&mut spec);
+        let cls = classify(&spec);
+        let mut total = 0usize;
+        for (root, variants) in &cls.roots {
+            let props = struct_props(&spec, &cls, root);
+            total += props
+                .iter()
+                .filter(|(orig, _)| orig.as_str() != "$type")
+                .filter(|(orig, ty)| {
+                    variants.iter().all(|v| {
+                        spec.resolved_props(&v.schema)
+                            .get(orig.as_str())
+                            .is_some_and(|vt| vt == *ty)
+                    })
+                })
+                .count();
+        }
+        assert_eq!(
+            total, 81,
+            "uniform accessor prop count changed; the uniform-prop filter may have regressed"
+        );
     }
 
     #[test]

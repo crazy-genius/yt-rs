@@ -31,12 +31,6 @@ pub enum BaseWorkItemKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BaseWorkItemData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `BaseWorkItemKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -145,12 +139,6 @@ pub enum BundleKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `BundleKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "isUpdateable", skip_serializing_if = "Option::is_none")]
@@ -236,12 +224,6 @@ pub enum BundleElementKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct BundleElementData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `BundleElementKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -421,12 +403,6 @@ pub enum ColorCodingKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct ColorCodingData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `ColorCodingKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -511,12 +487,6 @@ pub enum CommandVisibilityKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CommandVisibilityData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `CommandVisibilityKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
@@ -588,12 +558,6 @@ pub enum CustomFieldConditionKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFieldConditionData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `CustomFieldConditionKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -654,12 +618,6 @@ pub enum CustomFieldDefaultsKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct CustomFieldDefaultsData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `CustomFieldDefaultsKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "canBeEmpty", skip_serializing_if = "Option::is_none")]
     pub can_be_empty: Option<bool>,
     #[serde(rename = "emptyFieldText", skip_serializing_if = "Option::is_none")]
@@ -939,12 +897,6 @@ pub enum FilterFieldKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct FilterFieldData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `FilterFieldKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1465,12 +1417,6 @@ pub enum VisibilityKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct VisibilityData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `VisibilityKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }

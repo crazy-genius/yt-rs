@@ -154,12 +154,6 @@ pub enum UserKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `UserKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "avatarUrl", skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -407,12 +401,6 @@ pub enum UserGroupKind {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 pub struct UserGroupData {
-    /// Informational: populated only when this type is deserialized standalone
-    /// (as a directly-referenced field). Serde supplies the tag when this type is
-    /// reached through its `UserGroupKind` enum. DO NOT set this manually — doing so
-    /// emits a duplicate `$type` key and the value re-parses as `Unknown`.
-    #[serde(rename = "$type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
     #[serde(rename = "allUsersGroup", skip_serializing_if = "Option::is_none")]
     pub all_users_group: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
