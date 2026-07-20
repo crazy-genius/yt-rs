@@ -5,6 +5,7 @@ use crate::models::ApiError;
 use reqwest::{Client, Method, RequestBuilder, Response, Url};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
+use crate::clients::issues::IssuesApi;
 
 mod articles;
 mod issues;
@@ -108,6 +109,10 @@ impl YoutrackClient {
 impl YoutrackClient {
     pub fn users_api(&self) -> UsersApi<'_> {
         UsersApi { internal: self }
+    }
+
+    pub fn issues_api(&self) -> IssuesApi<'_> {
+        IssuesApi { internal: self }
     }
 }
 

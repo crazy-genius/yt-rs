@@ -10,6 +10,11 @@ impl From<Vec<String>> for FieldsQuery {
         FieldsQuery(value)
     }
 }
+impl Into<String> for FieldsQuery {
+    fn into(self) -> String {
+        self.0.join(",")
+    }
+}
 impl Serialize for FieldsQuery {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where

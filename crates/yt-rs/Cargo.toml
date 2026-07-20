@@ -17,6 +17,10 @@ examples = [
 name = "readme"
 path = "examples/readme.rs"
 required-features = ["examples"]
+[[example]]
+name = "read-issue"
+path = "examples/read-issue.rs"
+required-features = ["examples"]
 
 [dependencies]
 # serde
