@@ -21,6 +21,10 @@ required-features = ["examples"]
 name = "read-issue"
 path = "examples/read-issue.rs"
 required-features = ["examples"]
+[[example]]
+name = "list-issues"
+path = "examples/list-issues.rs"
+required-features = ["examples"]
 
 [dependencies]
 # serde
@@ -28,7 +32,7 @@ serde = { workspace = true, features = ["derive"]}
 serde_json = { workspace = true, features = ["std"] }
 
 # http client
-reqwest = { workspace = true, features = ["rustls", "json", "query"] }
+reqwest = { workspace = true, features = ["rustls", "json", "query", "multipart"] }
 url = { workspace = true, features = ["serde"] }
 
 # error handling

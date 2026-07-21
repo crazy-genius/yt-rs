@@ -1,11 +1,11 @@
 use crate::YoutrackError;
+pub use crate::clients::issues::*;
 use crate::clients::users::UsersApi;
 use crate::constants::REST_API_PREFIX;
 use crate::models::ApiError;
 use reqwest::{Client, Method, RequestBuilder, Response, Url};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
-use crate::clients::issues::IssuesApi;
 
 mod articles;
 mod issues;
@@ -64,6 +64,30 @@ impl YoutrackClient {
         }
 
         let response = self.inner_send_authorized(request_builder).await?;
+        self.decode_response(response).await
+    }
+
+    pub(crate) async fn inner_send_multipart<R>(
+        &self,
+        path: &str,
+        query: &[(&str, String)],
+        form: reqwest::multipart::Form,
+    ) -> crate::Result<R>
+    where
+        R: DeserializeOwned,
+    {
+        let endpoint = self.base_uri.join(path)?;
+        let request_builder =
+            self.http.request(Method::POST, endpoint).query(query).multipart(form);
+
+        let response = self.inner_send_authorized(request_builder).await?;
+        self.decode_response(response).await
+    }
+
+    async fn decode_response<R>(&self, response: Response) -> crate::Result<R>
+    where
+        R: DeserializeOwned,
+    {
         let status = response.status();
         let bytes = response.bytes().await?;
 
@@ -75,7 +99,6 @@ impl YoutrackClient {
             } else {
                 serde_json::from_slice(&bytes)?
             };
-
             return Ok(data);
         }
 

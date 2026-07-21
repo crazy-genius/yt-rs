@@ -4,6 +4,7 @@ pub const REST_API_PREFIX: &str = "api/";
 
 pub const ENDPOINT_USERS: &str = "users";
 pub const ENDPOINT_ISSUES: &str = "issues";
+pub const ENDPOINT_ISSUES_COUNT: &str = "issuesGetter/count";
 
 #[allow(dead_code)]
 pub const ENDPOINT_ARTICLES: &str = "articles";

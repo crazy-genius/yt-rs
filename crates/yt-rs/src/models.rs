@@ -10,9 +10,14 @@ impl From<Vec<String>> for FieldsQuery {
         FieldsQuery(value)
     }
 }
-impl Into<String> for FieldsQuery {
-    fn into(self) -> String {
-        self.0.join(",")
+impl FieldsQuery {
+    /// Joined field list with the `$type` tag injected exactly once.
+    pub(crate) fn into_field_value(self) -> String {
+        let mut joined = self.0.join(",");
+        if !self.0.iter().any(|f| f == "$type") {
+            joined = if joined.is_empty() { "$type".to_owned() } else { format!("$type,{joined}") };
+        }
+        joined
     }
 }
 impl Serialize for FieldsQuery {
@@ -22,11 +27,8 @@ impl Serialize for FieldsQuery {
     {
         // The generated polymorphic enums dispatch on `$type`, so it must always
         // be requested; nested selections are the caller's responsibility.
-        let mut joined = self.0.join(",");
-        if !self.0.iter().any(|f| f == "$type") {
-            joined = if joined.is_empty() { "$type".to_owned() } else { format!("$type,{joined}") };
-        }
-        (("fields", joined),).serialize(serializer)
+        let value = FieldsQuery(self.0.clone()).into_field_value();
+        (("fields", value),).serialize(serializer)
     }
 }
 
